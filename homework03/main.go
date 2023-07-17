@@ -1,38 +1,30 @@
 package main
 
 import (
-	"flag"
 	"fmt"
+	cnv "lecture03_homework/pkg/conv"
+	cop "lecture03_homework/pkg/copier"
+	o "lecture03_homework/pkg/options"
+	rw "lecture03_homework/pkg/read_write"
 	"os"
 )
 
-type Options struct {
-	From string
-	To   string
-	// todo: add required flags
-}
-
-func ParseFlags() (*Options, error) {
-	var opts Options
-
-	flag.StringVar(&opts.From, "from", "", "file to read. by default - stdin")
-	flag.StringVar(&opts.To, "to", "", "file to write. by default - stdout")
-
-	// todo: parse and validate all flags
-
-	flag.Parse()
-
-	return &opts, nil
+func HandleError(err error, s string) {
+	if err != nil {
+		_, _ = fmt.Fprintln(os.Stderr, s, err)
+		os.Exit(1)
+	}
 }
 
 func main() {
-	opts, err := ParseFlags()
-	if err != nil {
-		_, _ = fmt.Fprintln(os.Stderr, "can not parse flags:", err)
-		os.Exit(1)
-	}
+	opts, err := o.ParseFlags()
+	HandleError(err, "can not parse flags:")
 
-	fmt.Println(opts)
+	copier, err := rw.NewReadWrite(opts)
+	HandleError(err, "can not create copier:")
 
-	// todo: implement the functional requirements described in read.me
+	conver := cnv.NewConv(opts)
+
+	err = cop.Copy(&copier, &conver, opts)
+	HandleError(err, "can not copy:")
 }

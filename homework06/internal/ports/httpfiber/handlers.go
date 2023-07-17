@@ -18,14 +18,18 @@ func createAd(a app.App) fiber.Handler {
 			return c.JSON(AdErrorResponse(err))
 		}
 
-		//TODO: вызов логики, например, CreateAd(c.Context(), reqBody.Title, reqBody.Text, reqBody.UserID)
-		// TODO: метод должен возвращать AdSuccessResponse или ошибку.
+		ad, createErr := a.CreateAd(c.Context(), reqBody.Title, reqBody.Text, reqBody.UserID)
 
-		if err != nil {
+		switch createErr {
+		case app.ValidationError:
+			c.Status(http.StatusBadRequest)
+			return c.JSON(AdErrorResponse(createErr))
+		case nil:
+			return c.JSON(AdSuccessResponse(&ad))
+		default:
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(AdErrorResponse(err))
+			return c.JSON(AdErrorResponse(createErr))
 		}
-		return c.JSON(AdSuccessResponse( /* объект ad */ ))
 	}
 }
 
@@ -44,15 +48,18 @@ func changeAdStatus(a app.App) fiber.Handler {
 			return c.JSON(AdErrorResponse(err))
 		}
 
-		// TODO: вызов логики ChangeAdStatus(c.Context(), int64(adID), reqBody.UserID, reqBody.Published)
-		// TODO: метод должен возвращать AdSuccessResponse или ошибку.
+		ad, changeErr := a.ChangeAdStatus(c.Context(), int64(adID), reqBody.UserID, reqBody.Published)
 
-		if err != nil {
+		switch changeErr {
+		case app.WrongUserError:
+			c.Status(http.StatusForbidden)
+			return c.JSON(AdErrorResponse(changeErr))
+		case nil:
+			return c.JSON(AdSuccessResponse(&ad))
+		default:
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(AdErrorResponse(err))
+			return c.JSON(AdErrorResponse(changeErr))
 		}
-
-		return c.JSON(AdSuccessResponse( /* объект ad */ ))
 	}
 }
 
@@ -71,14 +78,20 @@ func updateAd(a app.App) fiber.Handler {
 			return c.JSON(AdErrorResponse(err))
 		}
 
-		// TODO: вызов логики, например, UpdateAd(c.Context(), int64(adID), reqBody.UserID, reqBody.Title, reqBody.Text)
-		// TODO: метод должен возвращать AdSuccessResponse или ошибку.
+		ad, updateErr := a.UpdateAd(c.Context(), int64(adID), reqBody.UserID, reqBody.Title, reqBody.Text)
 
-		if err != nil {
+		switch updateErr {
+		case app.WrongUserError:
+			c.Status(http.StatusForbidden)
+			return c.JSON(AdErrorResponse(updateErr))
+		case app.ValidationError:
+			c.Status(http.StatusBadRequest)
+			return c.JSON(AdErrorResponse(updateErr))
+		case nil:
+			return c.JSON(AdSuccessResponse(&ad))
+		default:
 			c.Status(http.StatusInternalServerError)
-			return c.JSON(AdErrorResponse(err))
+			return c.JSON(AdErrorResponse(updateErr))
 		}
-
-		return c.JSON(AdSuccessResponse( /* объект ad */ ))
 	}
 }

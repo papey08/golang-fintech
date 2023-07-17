@@ -2,9 +2,11 @@ package tagcloud_test
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"lecture02_homework/tagcloud"
+	"sync"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestEmptyTagCloud(t *testing.T) {
@@ -81,4 +83,101 @@ func TestTopNWithRepeatedOccurrence(t *testing.T) {
 	}
 
 	assert.Len(t, distinctMap, requestCount, "TopN(%d) returned array with non-distinct tags: %v", requestCount, topN)
+}
+
+// TestTopNDifficult checks if tags replaces correct if they be adding in random order
+func TestTopNWithRandomAddingOrder(t *testing.T) {
+	tags := []tagcloud.TagStat{
+		{
+			Tag:             "tag01",
+			OccurrenceCount: 50,
+		},
+		{
+			Tag:             "tag02",
+			OccurrenceCount: 50,
+		},
+		{
+			Tag:             "tag03",
+			OccurrenceCount: 100,
+		},
+		{
+			Tag:             "tag04",
+			OccurrenceCount: 100,
+		},
+		{
+			Tag:             "tag05",
+			OccurrenceCount: 100,
+		},
+		{
+			Tag:             "tag06",
+			OccurrenceCount: 100,
+		},
+		{
+			Tag:             "tag07",
+			OccurrenceCount: 100,
+		},
+		{
+			Tag:             "tag08",
+			OccurrenceCount: 200,
+		},
+		{
+			Tag:             "tag09",
+			OccurrenceCount: 200,
+		},
+		{
+			Tag:             "tag10",
+			OccurrenceCount: 200,
+		},
+	}
+
+	tc := tagcloud.New()
+
+	wg := new(sync.WaitGroup)
+	mu := new(sync.Mutex)
+	for _, tag := range tags {
+		wg.Add(1)
+		go func(tag tagcloud.TagStat) {
+			defer wg.Done()
+			for i := 0; i < tag.OccurrenceCount-1; i++ {
+				mu.Lock()
+				tc.AddTag(tag.Tag)
+				mu.Unlock()
+			}
+		}(tag)
+	}
+	wg.Wait()
+	for _, tag := range tags {
+		tc.AddTag(tag.Tag)
+	}
+
+	n := 5
+	correctTopN := []tagcloud.TagStat{
+		{
+			Tag:             "tag10",
+			OccurrenceCount: 200,
+		},
+		{
+			Tag:             "tag09",
+			OccurrenceCount: 200,
+		},
+		{
+			Tag:             "tag08",
+			OccurrenceCount: 200,
+		},
+		{
+			Tag:             "tag07",
+			OccurrenceCount: 100,
+		},
+		{
+			Tag:             "tag06",
+			OccurrenceCount: 100,
+		},
+	}
+	gotTopN := tc.TopN(n)
+
+	assert.Len(t, gotTopN, n, "TopN(%d) returned array: %v", n, gotTopN)
+	for i := range gotTopN {
+		assert.Equal(t, correctTopN[i].Tag, gotTopN[i].Tag, "TopN(%d)[%d] wrong tag: %s", n, i, gotTopN[i].Tag)
+		assert.Equal(t, correctTopN[i].OccurrenceCount, gotTopN[i].OccurrenceCount, "TopN(%d)[%d] wrong OccurrenceCount: %s", n, i, gotTopN[i].OccurrenceCount)
+	}
 }

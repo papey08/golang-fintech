@@ -9,6 +9,11 @@ import (
 func TestChangeStatusAdOfAnotherUser(t *testing.T) {
 	client := getTestClient()
 
+	_, err := client.createUser(123, "papey08", "email@golang.com")
+	assert.NoError(t, err)
+	_, err = client.createUser(100, "pokemosha", "email2@golang.com")
+	assert.NoError(t, err)
+
 	resp, err := client.createAd(123, "hello", "world")
 	assert.NoError(t, err)
 
@@ -19,6 +24,11 @@ func TestChangeStatusAdOfAnotherUser(t *testing.T) {
 func TestUpdateAdOfAnotherUser(t *testing.T) {
 	client := getTestClient()
 
+	_, err := client.createUser(123, "papey08", "email@golang.com")
+	assert.NoError(t, err)
+	_, err = client.createUser(100, "pokemosha", "email2@golang.com")
+	assert.NoError(t, err)
+
 	resp, err := client.createAd(123, "hello", "world")
 	assert.NoError(t, err)
 
@@ -28,6 +38,9 @@ func TestUpdateAdOfAnotherUser(t *testing.T) {
 
 func TestCreateAd_ID(t *testing.T) {
 	client := getTestClient()
+
+	_, err := client.createUser(123, "papey08", "email@golang.com")
+	assert.NoError(t, err)
 
 	resp, err := client.createAd(123, "hello", "world")
 	assert.NoError(t, err)

@@ -1,6 +1,7 @@
 package httpgin
 
 import (
+	"io"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,12 +14,14 @@ type Server struct {
 	app  *gin.Engine
 }
 
-func NewHTTPServer(port string, a app.App) Server {
+func NewHTTPServer(port string, a app.App, logsWriter io.Writer) Server {
 	gin.SetMode(gin.ReleaseMode)
-	s := Server{port: port, app: gin.New()}
-
-	// todo: add your own logic
-
+	s := Server{
+		port: port,
+		app:  gin.New(),
+	}
+	api := s.app.Group("api/v1")
+	AppRouter(api, a, logsWriter)
 	return s
 }
 

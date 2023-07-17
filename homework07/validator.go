@@ -2,6 +2,10 @@ package homework
 
 import (
 	"github.com/pkg/errors"
+	"homework/check"
+	"homework/parse"
+	"reflect"
+	"strings"
 )
 
 var ErrNotStruct = errors.New("wrong argument given, should be a struct")
@@ -15,11 +19,55 @@ type ValidationError struct {
 type ValidationErrors []ValidationError
 
 func (v ValidationErrors) Error() string {
-	// TODO: implement this
-	return ""
+	var res strings.Builder
+	for _, ve := range v {
+		res.WriteString(ve.Err.Error())
+	}
+	return res.String()
 }
 
 func Validate(v any) error {
-	// TODO: implement this
-	return nil
+	vt := reflect.TypeOf(v)
+
+	// check if v is not a struct
+	if vt.Kind() != reflect.Struct {
+		return ErrNotStruct
+	}
+
+	fieldAmount := vt.NumField()
+	validationErrors := make(ValidationErrors, 0, fieldAmount)
+
+	for i := 0; i < fieldAmount; i++ {
+		field := vt.Field(i)
+		if validationTag, ok := field.Tag.Lookup("validate"); ok {
+
+			// check if filed is not exported
+			if !field.IsExported() {
+				validationErrors = append(validationErrors, ValidationError{ErrValidateForUnexportedFields})
+				continue
+			}
+
+			validateOperation, args := parse.ValidationParams(validationTag)
+
+			// check if validate tag is invalid
+			if validateOperation == parse.Wrong {
+				validationErrors = append(validationErrors, ValidationError{ErrInvalidValidatorSyntax})
+				continue
+			}
+
+			value := reflect.ValueOf(v).FieldByName(field.Name).Interface()
+
+			// check if value or type of the field don't satisfy validate tag
+			err := check.ValidField(value, validateOperation, args)
+			if err != nil {
+				validationErrors = append(validationErrors, ValidationError{err})
+			}
+		}
+	}
+
+	if len(validationErrors) != 0 {
+		return validationErrors
+	} else {
+		return nil
+	}
 }

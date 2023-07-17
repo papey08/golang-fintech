@@ -217,6 +217,86 @@ func TestValidate(t *testing.T) {
 				return true
 			},
 		},
+		{
+			name: "wrong field of type []int",
+			args: args{
+				v: struct {
+					MinNums []int `validate:"min:0"`
+					MaxNums []int `validate:"max:10"`
+				}{
+					MinNums: []int{9, 10, 11},
+					MaxNums: []int{9, 10, 11},
+				},
+			},
+			wantErr: true,
+			checkErr: func(err error) bool {
+				assert.Len(t, err.(ValidationErrors), 1)
+				return true
+			},
+		},
+		{
+			name: "wrong field of type []string",
+			args: args{
+				v: struct {
+					ShortStrings []string `validate:"len:10"`
+					LongStrings  []string `validate:"len:10"`
+				}{
+					ShortStrings: []string{"abc", "def", "ghi"},
+					LongStrings:  []string{"abcdefghij", "klmnopqrst"},
+				},
+			},
+			wantErr: true,
+			checkErr: func(err error) bool {
+				assert.Len(t, err.(ValidationErrors), 1)
+				return true
+			},
+		},
+		{
+			name: "wrong fields of type []int and []string",
+			args: args{
+				v: struct {
+					ShortStrings []string `validate:"min:5"`
+					LongStrings  []string `validate:"min:5"`
+					SmallNums    []int    `validate:"max:10"`
+					BigNums      []int    `validate:"max:10"`
+					PrimeNums    []int    `validate:"in:2,3,5,7,11"`
+					PiDigits     []int    `validate:"in:2,3,5,7,11"`
+				}{
+					ShortStrings: []string{"abc", "def", "ghijk"},
+					LongStrings:  []string{"AntonOcean", "kuai6", "mikhail-chebakov", "TimRazumov"},
+					SmallNums:    []int{5, 4, 3, 2, 1},
+					BigNums:      []int{2904, 46447, 1210},
+					PrimeNums:    []int{5, 5, 7, 2, 3, 2},
+					PiDigits:     []int{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5},
+				},
+			},
+			wantErr: true,
+			checkErr: func(err error) bool {
+				assert.Len(t, err.(ValidationErrors), 3)
+				return true
+			},
+		},
+		{
+			name: "all valid fields",
+			args: args{
+				v: struct {
+					ShortStrings []string `validate:"max:5"`
+					LongStrings  []string `validate:"min:5"`
+					SmallNums    []int    `validate:"max:10"`
+					BigNums      []int    `validate:"min:10"`
+					PrimeNums    []int    `validate:"in:2,3,5,7,11"`
+					PiDigits     []int    `validate:"in:0,1,2,3,4,5,6,7,8,9"`
+				}{
+					ShortStrings: []string{"abc", "def", "ghijk"},
+					LongStrings:  []string{"AntonOcean", "kuai6", "mikhail-chebakov", "TimRazumov"},
+					SmallNums:    []int{5, 4, 3, 2, 1},
+					BigNums:      []int{2904, 46447, 1210},
+					PrimeNums:    []int{5, 5, 7, 2, 3, 2},
+					PiDigits:     []int{3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5},
+				},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

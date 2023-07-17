@@ -1,0 +1,6 @@
+"grpc":
+  "network": "tcp"
+  "port": 50054
+
+"http":
+  "port": 18080

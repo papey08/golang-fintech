@@ -1,0 +1,14 @@
+"grpc":
+  "network": "tcp"
+  "port": 50054
+
+"http":
+  "port": 18080
+
+"adrepo":
+  "username": "postgres"
+  "password": "postgres"
+  "host": "localhost"
+  "port": "5432"
+  "dbname": "adrepo"
+  "sslmode": "disable"

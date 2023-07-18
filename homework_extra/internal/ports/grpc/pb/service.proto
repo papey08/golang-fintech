@@ -1,0 +1,106 @@
+syntax = "proto3";
+
+package ad;
+option go_package = "/pb";
+import "google/protobuf/empty.proto";
+
+service AdService {
+  rpc CreateAd(CreateAdRequest) returns (AdResponse) {}
+  rpc ChangeAdStatus(ChangeAdStatusRequest) returns (AdResponse) {}
+  rpc UpdateAd(UpdateAdRequest) returns (AdResponse) {}
+  rpc GetAdByID(GetAdByIDRequest) returns (AdResponse) {}
+  rpc GetAdsList(FilterRequest) returns (ListAdResponse) {}
+  rpc SearchAds(SearchAdsRequest) returns (ListAdResponse) {}
+  rpc DeleteAd(DeleteAdRequest) returns (google.protobuf.Empty) {}
+
+  rpc GetUserByID(GetUserByIDRequest) returns (UserResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (UserResponse) {}
+  rpc UpdateUser(UpdateUserRequest) returns (UserResponse) {}
+  rpc DeleteUser(DeleteUserRequest) returns (google.protobuf.Empty) {}
+
+}
+
+message CreateAdRequest {
+  string title = 1;
+  string text = 2;
+  int64 author_id = 3;
+}
+
+message ChangeAdStatusRequest {
+  int64 id = 1;
+  int64 author_id = 2;
+  bool published = 3;
+}
+
+message UpdateAdRequest {
+  int64 id = 1;
+  string title = 2;
+  string text = 3;
+  int64 author_id = 4;
+}
+
+message GetAdByIDRequest {
+  int64 id = 1;
+}
+
+message SearchAdsRequest {
+  string pattern = 1;
+}
+
+message DeleteAdRequest {
+  int64 id = 1;
+  int64 author_id = 2;
+}
+
+message ListAdResponse {
+  repeated AdResponse list = 1;
+}
+
+message AdResponse {
+  int64 id = 1;
+  string title = 2;
+  string text = 3;
+  int64 author_id = 4;
+  bool published = 5;
+  Date creation_date = 6;
+  Date update_date = 7;
+}
+
+message Date {
+  int64 day = 1;
+  int64 month = 2;
+  int64 year = 3;
+}
+
+message FilterRequest {
+  bool published_by = 1;
+  bool author_by = 2;
+  int64 author_id = 3;
+  bool date_by = 4;
+  Date date = 5;
+}
+
+message UserResponse {
+  int64 id = 1;
+  string nickname = 2;
+  string email = 3;
+}
+
+message GetUserByIDRequest {
+  int64 id = 1;
+}
+
+message CreateUserRequest {
+  string nickname = 1;
+  string email = 2;
+}
+
+message UpdateUserRequest {
+  int64 id = 1;
+  string nickname = 2;
+  string email = 3;
+}
+
+message DeleteUserRequest {
+  int64 id = 1;
+}

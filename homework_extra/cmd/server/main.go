@@ -50,12 +50,13 @@ func main() {
 
 	grpcPort := viper.GetInt("grpc.port")
 	network := viper.GetString("grpc.network")
-	dbURL := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
+
+	dbURL := fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s",
+		viper.GetString("adrepo.username"),
+		viper.GetString("adrepo.password"),
 		viper.GetString("adrepo.host"),
 		viper.GetString("adrepo.port"),
-		viper.GetString("adrepo.username"),
 		viper.GetString("adrepo.dbname"),
-		viper.GetString("adrepo.password"),
 		viper.GetString("adrepo.sslmode"))
 
 	conn, err := pgx.Connect(context.Background(), dbURL)
@@ -69,6 +70,7 @@ func main() {
 
 	a := app.NewApp(adrepo.New(conn), user_repo.New())
 
+	// configuring graceful shutdown
 	sigQuit := make(chan os.Signal, 1)
 	defer close(sigQuit)
 	signal.Ignore(syscall.SIGHUP, syscall.SIGPIPE)

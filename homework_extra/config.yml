@@ -3,6 +3,7 @@
   "port": 50054
 
 "http":
+  "host": "app"
   "port": 8080
 
 "adrepo":

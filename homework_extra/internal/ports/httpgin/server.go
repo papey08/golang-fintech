@@ -13,13 +13,13 @@ import (
 )
 
 // NewHTTPServer creates http.Server with routes and middlewares
-func NewHTTPServer(port int, app app.App) *http.Server {
+func NewHTTPServer(host string, port int, app app.App) *http.Server {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	api := router.Group("api/v1")
 	AppRouter(api, app)
 	return &http.Server{
-		Addr:    fmt.Sprintf("localhost:%d", port),
+		Addr:    fmt.Sprintf("%s:%d", host, port),
 		Handler: router,
 	}
 }

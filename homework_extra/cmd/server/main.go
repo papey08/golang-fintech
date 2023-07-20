@@ -20,8 +20,8 @@ import (
 	"time"
 )
 
-func HTTPServerWithGracefulShutdown(ctx context.Context, port int, a app.App, eg *errgroup.Group) {
-	srv := httpgin.NewHTTPServer(port, a)
+func HTTPServerWithGracefulShutdown(ctx context.Context, host string, port int, a app.App, eg *errgroup.Group) {
+	srv := httpgin.NewHTTPServer(host, port, a)
 	httpgin.GracefulShutdown(ctx, srv, eg)
 }
 
@@ -47,6 +47,7 @@ func main() {
 		log.Printf("config error: %s\n", err.Error())
 		return
 	}
+	httpHost := viper.GetString("http.host")
 	httpPort := viper.GetInt("http.port")
 
 	grpcPort := viper.GetInt("grpc.port")
@@ -100,7 +101,7 @@ func main() {
 	wg.Add(1)
 	go func() {
 		defer wg.Done()
-		HTTPServerWithGracefulShutdown(ctx, httpPort, a, eg)
+		HTTPServerWithGracefulShutdown(ctx, httpHost, httpPort, a, eg)
 	}()
 
 	// starting grpc server

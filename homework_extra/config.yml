@@ -3,12 +3,12 @@
   "port": 50054
 
 "http":
-  "port": 18080
+  "port": 8080
 
 "adrepo":
   "username": "postgres"
   "password": "postgres"
-  "host": "localhost"
+  "host": "adrepo"
   "port": "5432"
-  "dbname": "adrepo"
+  "dbname": "postgres"
   "sslmode": "disable"

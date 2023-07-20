@@ -17,6 +17,7 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"time"
 )
 
 func HTTPServerWithGracefulShutdown(ctx context.Context, port int, a app.App, eg *errgroup.Group) {
@@ -59,10 +60,16 @@ func main() {
 		viper.GetString("adrepo.dbname"),
 		viper.GetString("adrepo.sslmode"))
 
-	conn, err := pgx.Connect(context.Background(), dbURL)
-	if err != nil {
-		log.Printf("adrepo connection error: %s\n", err.Error())
-		return
+	// connecting to a database in the loop with delay 1 sec for correct starting in docker container
+	var conn *pgx.Conn
+	for {
+		conn, err = pgx.Connect(context.Background(), dbURL)
+		if err != nil { // database haven't initialized in docker container yet
+			log.Printf("adrepo connection error: %s\n", err.Error())
+			time.Sleep(time.Second)
+		} else { // database already initialized
+			break
+		}
 	}
 	defer func(conn *pgx.Conn, ctx context.Context) {
 		_ = conn.Close(ctx)

@@ -14,6 +14,9 @@
 |  |--server
 |     |--main.go // точка входа в приложение
 |
+|--doc
+|  |-coverage.html // отчёт о покрытии тестами в формате html
+|
 |--internal
 |  |--adapters // слой БД
 |  |  |--adrepo // хранилище объявлений
@@ -75,6 +78,11 @@
 * только опубликованные
 * по автору
 * по дате создания
+
+### Поддерживаемые методы
+
+* [HTTP](https://github.com/papey08/golang-fintech/blob/homework/extra/homework_extra/internal/ports/httpgin/router.go)
+* [gRPC](https://github.com/papey08/golang-fintech/blob/homework/extra/homework_extra/internal/ports/grpc/pb/service.proto)
 
 ### Используемые технологии
 

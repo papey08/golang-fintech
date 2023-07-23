@@ -23,7 +23,7 @@ type httpServerTestSuite struct {
 
 func httpServerTestSuiteInit(s *httpServerTestSuite) {
 	s.app = new(mocks.App)
-	s.srv = NewHTTPServer(18080, s.app)
+	s.srv = NewHTTPServer("localhost", 18080, s.app)
 	testServer := httptest.NewServer(s.srv.Handler)
 	s.client = testServer.Client()
 	s.baseURL = testServer.URL

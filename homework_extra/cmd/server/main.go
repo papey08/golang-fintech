@@ -111,7 +111,9 @@ func main() {
 		viper.GetString("adrepo.sslmode"))
 	adrepoConn := AdRepoConfig(ctx, adRepoURL)
 	defer func(ctx context.Context, conn *pgx.Conn) {
-		_ = conn.Close(ctx)
+		if err = conn.Close(ctx); err != nil {
+			log.Fatal("adrepo disconnect error:", err)
+		}
 	}(ctx, adrepoConn)
 
 	// configuring user_repo

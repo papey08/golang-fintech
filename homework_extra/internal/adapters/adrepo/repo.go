@@ -34,7 +34,7 @@ const (
 	getAdsListQuery = `
 		SELECT * FROM ads
 		WHERE
-		    ((NOT $1) OR published) AND
+		    (($1) OR published) AND
 		    ((NOT $2) OR author_id = $3) AND
 		    ((NOT $4) OR creation_date = $5);`
 

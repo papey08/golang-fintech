@@ -10,44 +10,44 @@
 ### Структура проекта
 
 ```text
-|--cmd
-|  |--server
-|     |--main.go // точка входа в приложение
-|
-|--doc
-|  |-coverage.html // отчёт о покрытии тестами в формате html
-|
-|--internal
-|  |--adapters // слой БД
-|  |  |--adrepo // хранилище объявлений
-|  |  |--user_repo // хранилище пользователей
-|  |
-|  |--app // слой бизнес-логики (usecase)
-|  |  |--adrepo_mocks
-|  |  |--user_repo_mocks
-|  |  |--app.go // интерфейс приложения
-|  |  |--my_app.go // реализация интерфейса приложения
-|  |  |--my_app_test.go
-|  |
-|  |--model // слой сущностей (entities)
-|  |  |--ads // описание объявления
-|  |  |--errs
-|  |  |--filter
-|  |  |--users // описание пользователя
-|  |
-|  |--ports // сетевой слой (infrastructure)
-|  |  |--grpc // gRPC-сервер
-|  |  |--httpgin // HTTP-сервер на gin
-|
-|--migrations
-|  |--adrepo_init.sql // скрипт для конфигурации adrepo
-|
-|--config.yml // файл с конфигами
-|--docker-compose.yml
-|--Dockerfile
-|--go.mod
-|--go.sum
-|--README.md
+├── cmd
+│   └── server
+│       └── main.go // точка входа в приложение
+│
+├── doc
+│   └── coverage.html // отчёт о покрытии тестами в формате html
+│
+├── internal
+│   ├── adapters // слой БД
+│   │   ├── adrepo // хранилище объявлений
+│   │   └── user_repo // хранилище пользователей
+│   │
+│   ├── app // слой бизнес-логики (usecase)
+│   │   ├── adrepo_mocks
+│   │   ├── app.go // интерфейс приложения
+│   │   ├── my_app.go // реализация интерфейса приложения
+│   │   ├── my_app_test.go
+│   │   └── user_repo_mocks
+│   │
+│   ├── model // слой сущностей (entities)
+│   │   ├── ads // описание объявления
+│   │   ├── errs
+│   │   ├── filter
+│   │   └── users // описание пользователя
+│   │
+│   └── ports // сетевой слой (infrastructure)
+│       ├── grpc // gRPC-сервер
+│       └── httpgin // HTTP-сервер на gin
+│
+├── migrations
+│   └── adrepo_init.sql // скрипт для конфигурации adrepo
+│
+├── config.yml // файл с конфигами
+├── docker-compose.yml
+├── Dockerfile
+├── go.mod
+├── go.sum
+└── README.md
 ```
 
 ### Стркуктура `ad`
@@ -95,7 +95,7 @@
 
 ## Запуск
 
-### С помощью Docker:
+### С помощью Docker
 
 ```shell
 $ docker-compose up

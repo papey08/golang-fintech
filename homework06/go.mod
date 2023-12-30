@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	github.com/gofiber/fiber/v2 v2.43.0
-	github.com/papey08/go_course_validation v1.2.3
+	github.com/papey08/golang-fintech/validation v0.0.0-20231230233249-4ad7799a8784
 )
 
 require (

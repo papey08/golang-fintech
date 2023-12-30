@@ -3,8 +3,9 @@ package app
 import (
 	"context"
 	"errors"
-	valid "github.com/papey08/go_course_validation"
 	"homework6/internal/ads"
+
+	valid "github.com/papey08/golang-fintech/validation"
 )
 
 var ValidationError = errors.New("invalid ad struct")

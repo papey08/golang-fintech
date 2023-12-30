@@ -6,9 +6,9 @@ require (
 	github.com/gin-gonic/gin v1.9.0
 	github.com/golang/protobuf v1.5.2
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/papey08/go_course_validation v1.2.3
+	github.com/papey08/golang-fintech/validation v0.0.0-20231230233249-4ad7799a8784
 	github.com/spf13/viper v1.15.0
-	github.com/stretchr/testify v1.8.2
+	github.com/stretchr/testify v1.8.4
 	golang.org/x/sync v0.1.0
 	google.golang.org/grpc v1.54.0
 	google.golang.org/protobuf v1.30.0

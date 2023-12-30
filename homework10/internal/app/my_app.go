@@ -2,11 +2,12 @@ package app
 
 import (
 	"context"
-	valid "github.com/papey08/go_course_validation"
 	"homework10/internal/model/ads"
 	"homework10/internal/model/errs"
 	"homework10/internal/model/filter"
 	"homework10/internal/model/users"
+
+	valid "github.com/papey08/golang-fintech/validation"
 )
 
 type MyApp struct {
